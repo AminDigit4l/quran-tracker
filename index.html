@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Reading Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #eaf3ff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .section-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .card {
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .nav-link.active {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .archive-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .archive-table th, .archive-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        .archive-table th {
+            background-color: #f2f2f2;
+        }
+        .divider {
+            height: 1px;
+            background-color: #ccc;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-center">Quran Reading Tracker</h1>
+    <p class="text-center">Track your Quran reading progress effortlessly</p>
+
+    <!-- Main Dashboard -->
+    <div class="container">
+        <div class="row">
+            <!-- Campaign Section -->
+            <div class="col-md-12">
+                <div class="card">
+                    <h4 class="section-header">Active Campaign</h4>
+                    <label for="campaignSelect">Select or Switch Campaign:</label>
+                    <select id="campaignSelect" class="form-control mb-3"></select>
+                    <button class="btn btn-success mb-3" data-toggle="modal" data-target="#newCampaignModal">Create New Campaign</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Entry Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <h4 class="section-header">Add Daily Reading Entry</h4>
+                    <input type="number" id="pagesRead" placeholder="Enter the number of pages" class="form-control mb-2">
+                    <button id="addEntry" class="btn btn-primary">Add Entry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Chart Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <h4 class="section-header">Progress</h4>
+                    <canvas id="progressChart" style="margin-top: 20px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archived Campaigns Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <h4 class="section-header">Archived Campaigns</h4>
+                    <table class="archive-table">
+                        <thead>
+                            <tr>
+                                <th>Campaign Name</th>
+                                <th>Target Pages</th>
+                                <th>Total Pages Read</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archiveTableBody">
+                            <!-- Archived campaign rows will be inserted here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for New Campaign -->
+    <div class="modal fade" id="newCampaignModal" tabindex="-1" role="dialog" aria-labelledby="newCampaignModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newCampaignModalLabel">Create New Campaign</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="newCampaignName">Campaign Name:</label>
+                    <input type="text" id="newCampaignName" class="form-control mb-2" placeholder="Enter campaign name">
+                    <label for="newTargetPages">Target Pages:</label>
+                    <input type="number" id="newTargetPages" class="form-control" placeholder="Enter target pages">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="createCampaignBtn" class="btn btn-primary">Create Campaign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let campaigns = JSON.parse(localStorage.getItem('campaigns')) || {};
+        let activeCampaign = localStorage.getItem('activeCampaign') || null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCampaigns();
+            loadArchivedCampaigns();
+            if (activeCampaign) {
+                updateDashboard();
+            }
+        });
+
+        document.getElementById('createCampaignBtn').addEventListener('click', function() {
+            const campaignName = document.getElementById('newCampaignName').value.trim();
+            const targetPages = parseInt(document.getElementById('newTargetPages').value);
+
+            if (campaignName && !isNaN(targetPages) && targetPages > 0) {
+                if (campaigns[campaignName]) {
+                    alert('Campaign name already exists. Please choose a different name.');
+                } else {
+                    campaigns[campaignName] = { target: targetPages, entries: [] };
+                    localStorage.setItem('campaigns', JSON.stringify(campaigns));
+                    alert('New campaign created successfully!');
+
+                    document.getElementById('newCampaignName').value = '';
+                    document.getElementById('newTargetPages').value = '';
+                    $('#newCampaignModal').modal('hide');
+
+                    activeCampaign = campaignName;
+                    localStorage.setItem('activeCampaign', activeCampaign);
+                    loadCampaigns();
+                    updateDashboard();
+                }
+            } else {
+                alert('Please enter a valid campaign name and target pages.');
+            }
+        });
+
+        document.getElementById('campaignSelect').addEventListener('change', function() {
+            activeCampaign = this.value;
+            localStorage.setItem('activeCampaign', activeCampaign);
+            updateDashboard();
+        });
+
+        document.getElementById('addEntry').addEventListener('click', function() {
+            const pages = parseInt(document.getElementById('pagesRead').value);
+            const campaignData = campaigns[activeCampaign];
+            const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
+            const remainingPages = campaignData.target - totalPagesRead;
+
+            if (!isNaN(pages) && pages > 0 && pages <= remainingPages) {
+                campaigns[activeCampaign].entries.push(pages);
+                localStorage.setItem('campaigns', JSON.stringify(campaigns));
+                updateDashboard();
+                document.getElementById('pagesRead').value = '';
+            } else {
+                alert(`Please enter a valid number of pages (1 to ${remainingPages}).`);
+            }
+        });
+
+        function loadCampaigns() {
+            const campaignSelect = document.getElementById('campaignSelect');
+            campaignSelect.innerHTML = '';  
+            for (const campaign in campaigns) {
+                const option = document.createElement('option');
+                option.value = campaign;
+                option.textContent = campaign;
+                if (campaign === activeCampaign) option.selected = true;
+                campaignSelect.appendChild(option);
+            }
+        }
+
+        function updateDashboard() {
+            const campaignData = campaigns[activeCampaign];
+            updateChart(campaignData.entries);
+        }
+
+        function updateChart(entries) {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            if (window.myChart) window.myChart.destroy();
+
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: entries.length }, (_, i) => `Day ${i + 1}`),
+                    datasets: [{
+                        label: `${activeCampaign} - Pages Read`,
+                        data: entries,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false,
+                        tension: 0.3,
+                        borderWidth: 3
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        function loadArchivedCampaigns() {
+            const archiveTableBody = document.getElementById('archiveTableBody');
+            archiveTableBody.innerHTML = '';
+
+            for (const [campaignName, campaignData] of Object.entries(campaigns)) {
+                const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
+                const status = totalPagesRead >= campaignData.target ? 'Completed 🎉' : 'In Progress';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${campaignName}</td>
+                    <td>${campaignData.target}</td>
+                    <td>${totalPagesRead}</td>
+                    <td>${status}</td>
+                `;
+                archiveTableBody.appendChild(row);
+            }
+        }
+    </script>
+</body>
+</html>
