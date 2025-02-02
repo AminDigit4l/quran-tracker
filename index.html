@@ -43,6 +43,12 @@
             <div class="col-md-12">
                 <div class="card">
                     <h4 class="section-header">Progress</h4>
+                    <!-- Progress Bar Section -->
+                    <div class="progress mt-3">
+                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            0%
+                        </div>
+                    </div>
                     <canvas id="progressChart" style="margin-top: 20px;"></canvas>
                 </div>
             </div>
@@ -59,7 +65,7 @@
                                 <th>Campaign Name</th>
                                 <th>Target Pages</th>
                                 <th>Total Pages Read</th>
-                                <th>Status</th>
+                                <th>Pages Left</th>
                             </tr>
                         </thead>
                         <tbody id="archiveTableBody">
