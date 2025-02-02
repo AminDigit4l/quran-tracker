@@ -135,7 +135,7 @@ function loadArchivedCampaigns() {
     for (const [campaignName, campaignData] of Object.entries(campaigns)) {
         const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
         const pagesLeft = campaignData.target - totalPagesRead;
-        const displayPagesLeft = pagesLeft <= 0 ? 'Completed 🎉' : `${pagesLeft} pages left`;
+        const displayPagesLeft = pagesLeft <= 0 ? 'Completed 🎉' : `${pagesLeft}`;
 
         const row = document.createElement('tr');
         row.innerHTML = `
