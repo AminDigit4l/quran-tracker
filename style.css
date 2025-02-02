@@ -1,0 +1,35 @@
+body {
+    background-color: #eaf3ff;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+.section-header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.card {
+    padding: 20px;
+    margin-top: 15px;
+}
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff;
+}
+.archive-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.archive-table th, .archive-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+.archive-table th {
+    background-color: #f2f2f2;
+}
+.divider {
+    height: 1px;
+    background-color: #ccc;
+    margin: 15px 0;
+}
