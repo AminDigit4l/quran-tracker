@@ -51,7 +51,13 @@ document.getElementById('campaignSelect').addEventListener('change', function ()
 document.getElementById('addEntry').addEventListener('click', function () {
     const pages = parseInt(document.getElementById('pagesRead').value);
     const campaignData = campaigns[activeCampaign];
-    const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
+
+    if (!campaignData) {
+        alert('No active campaign selected.');
+        return;
+    }
+
+    const totalPagesRead = campaignData.entries.reduce((sum, entry) => sum + entry.pages, 0);
     const remainingPages = campaignData.target - totalPagesRead;
 
     if (!isNaN(pages) && pages > 0 && pages <= remainingPages) {
