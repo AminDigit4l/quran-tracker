@@ -1,1 +1,83 @@
-
+body {
+    background-color: #eaf3ff;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+.section-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.card {
+    padding: 20px;
+    margin-top: 15px;
+}
+.nav-link.active {
+    font-weight: bold;
+    color: #007bff;
+}
+.archive-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.archive-table th, .archive-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+.archive-table th {
+    background-color: #f2f2f2;
+}
+.divider {
+    height: 1px;
+    background-color: #ccc;
+    margin: 15px 0;
+}
+.progress {
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    height: 25px;
+    width: 100%;
+}
+.progress-bar {
+    background-color: #007bff;
+    font-weight: bold;
+    text-align: center;
+    line-height: 25px;
+    color: white;
+    transition: width 0.5s ease; /* Smooth animation */
+}
+.archive-table td {
+    font-weight: normal;
+}
+.archive-table td.completed {
+    font-weight: bold;
+    color: green !important;
+}
+@media (max-width: 768px) {
+    .archive-table td {
+        font-size: 14px;  /* Reduce font size on mobile */
+        padding: 6px;     /* Reduce padding on mobile */
+    }
+}
+#dailyEntriesTable {
+    margin-top: 15px;
+    width: 100%;
+}
+#dailyEntriesTable th, #dailyEntriesTable td {
+    text-align: center;
+    padding: 10px;
+}
+.edit-btn, .delete-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    color: white;
+}
+.edit-btn {
+    background-color: #007bff;
+}
+.delete-btn {
+    background-color: #dc3545;
+}
