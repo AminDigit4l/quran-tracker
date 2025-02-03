@@ -60,3 +60,24 @@ body {
         padding: 6px;     /* Reduce padding on mobile */
     }
 }
+#dailyEntriesTable {
+    margin-top: 15px;
+    width: 100%;
+}
+#dailyEntriesTable th, #dailyEntriesTable td {
+    text-align: center;
+    padding: 10px;
+}
+.edit-btn, .delete-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    color: white;
+}
+.edit-btn {
+    background-color: #007bff;
+}
+.delete-btn {
+    background-color: #dc3545;
+}
