@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadArchivedCampaigns();
     if (activeCampaign) {
         updateDashboard();
-        loadArchivedCampaigns();
-        initializeProgressBar();  // Initialize progress bar on page load
+        initializeProgressBar();
+        renderDailyEntries();  // Ensure daily entries are shown on page load
     }
 });
 
-document.getElementById('createCampaignBtn').addEventListener('click', function() {
+document.getElementById('createCampaignBtn').addEventListener('click', function () {
     const campaignName = document.getElementById('newCampaignName').value.trim();
     const targetPages = parseInt(document.getElementById('newTargetPages').value);
 
@@ -23,6 +23,7 @@ document.getElementById('createCampaignBtn').addEventListener('click', function(
             localStorage.setItem('campaigns', JSON.stringify(campaigns));
             alert('New campaign created successfully!');
 
+            // Clear inputs and close modal
             document.getElementById('newCampaignName').value = '';
             document.getElementById('newTargetPages').value = '';
             $('#newCampaignModal').modal('hide');
@@ -31,35 +32,37 @@ document.getElementById('createCampaignBtn').addEventListener('click', function(
             localStorage.setItem('activeCampaign', activeCampaign);
             loadCampaigns();
             updateDashboard();
-            loadArchivedCampaigns();
-            initializeProgressBar();  // Set initial progress to 0%
+            initializeProgressBar();
+            renderDailyEntries();  // Clear/reset daily entries for new campaign
         }
     } else {
         alert('Please enter a valid campaign name and target pages.');
     }
 });
 
-document.getElementById('campaignSelect').addEventListener('change', function() {
+document.getElementById('campaignSelect').addEventListener('change', function () {
     activeCampaign = this.value;
     localStorage.setItem('activeCampaign', activeCampaign);
     updateDashboard();
-    loadArchivedCampaigns();
-    initializeProgressBar();  // Reinitialize progress bar for the selected campaign
+    initializeProgressBar();
+    renderDailyEntries();  // Show daily entries for the selected campaign
 });
 
-document.getElementById('addEntry').addEventListener('click', function() {
+document.getElementById('addEntry').addEventListener('click', function () {
     const pages = parseInt(document.getElementById('pagesRead').value);
     const campaignData = campaigns[activeCampaign];
     const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
     const remainingPages = campaignData.target - totalPagesRead;
 
     if (!isNaN(pages) && pages > 0 && pages <= remainingPages) {
-        campaigns[activeCampaign].entries.push(pages);
+        // Optional: Track the date with each entry
+        const today = new Date().toLocaleDateString();
+        campaignData.entries.push({ pages: pages, date: today });
         localStorage.setItem('campaigns', JSON.stringify(campaigns));
         updateDashboard();
-        document.getElementById('pagesRead').value = '';
-        updateProgressBar(campaignData.entries.reduce((sum, pages) => sum + pages, 0), campaignData.target);  // Update progress bar
-        loadArchivedCampaigns(); // Added this line to refresh the archive table
+        renderDailyEntries();  // Update table with the new entry
+        loadArchivedCampaigns();
+        document.getElementById('pagesRead').value = '';  // Clear input field
     } else {
         alert(`Please enter a valid number of pages (1 to ${remainingPages}).`);
     }
@@ -79,14 +82,57 @@ function loadCampaigns() {
 
 function updateDashboard() {
     const campaignData = campaigns[activeCampaign];
+    const totalPagesRead = campaignData.entries.reduce((sum, entry) => sum + entry.pages, 0);
+    updateProgressBar(totalPagesRead, campaignData.target);
     updateChart(campaignData.entries);
-    updateProgressBar(campaignData.entries.reduce((sum, pages) => sum + pages, 0), campaignData.target);  // Ensure progress bar syncs with chart
+}
+
+function renderDailyEntries() {
+    const dailyEntriesTableBody = document.querySelector('#dailyEntriesTable tbody');
+    dailyEntriesTableBody.innerHTML = '';  // Clear the table before re-rendering
+
+    const campaignData = campaigns[activeCampaign];
+    if (!campaignData) return;
+
+    campaignData.entries.forEach((entry, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${entry.date}</td>
+            <td>${entry.pages}</td>
+            <td>
+                <button class="edit-btn" onclick="editEntry(${index})">Edit</button>
+                <button class="delete-btn" onclick="deleteEntry(${index})">Delete</button>
+            </td>
+        `;
+        dailyEntriesTableBody.appendChild(row);
+    });
+}
+
+function editEntry(index) {
+    const campaignData = campaigns[activeCampaign];
+    const entryToEdit = campaignData.entries[index];
+
+    document.getElementById('pagesRead').value = entryToEdit.pages;  // Prefill input with pages read
+
+    // Remove the entry temporarily and refresh the table
+    campaignData.entries.splice(index, 1);
+    localStorage.setItem('campaigns', JSON.stringify(campaigns));
+    renderDailyEntries();
+}
+
+function deleteEntry(index) {
+    const campaignData = campaigns[activeCampaign];
+    campaignData.entries.splice(index, 1);  // Remove the selected entry
+    localStorage.setItem('campaigns', JSON.stringify(campaigns));
+    renderDailyEntries();  // Refresh the table
+    updateDashboard();  // Update progress bar and chart
+    loadArchivedCampaigns();  // Refresh archive table
 }
 
 function initializeProgressBar() {
     if (activeCampaign) {
         const campaignData = campaigns[activeCampaign];
-        const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
+        const totalPagesRead = campaignData.entries.reduce((sum, entry) => sum + entry.pages, 0);
         updateProgressBar(totalPagesRead, campaignData.target);
     }
 }
@@ -96,11 +142,7 @@ function updateProgressBar(currentPages, targetPages) {
         console.error("Invalid target pages");
         return;
     }
-
-    // Calculate progress and cap it at 100%
     const progressPercentage = Math.min((currentPages / targetPages) * 100, 100);
-    
-    // Update progress bar width and text
     const progressBar = document.getElementById('progressBar');
     progressBar.style.width = `${progressPercentage}%`;
     progressBar.innerText = `${Math.floor(progressPercentage)}%`;
@@ -111,13 +153,16 @@ function updateChart(entries) {
     const ctx = document.getElementById('progressChart').getContext('2d');
     if (window.myChart) window.myChart.destroy();
 
+    const chartData = entries.map(entry => entry.pages);
+    const labels = entries.map((entry, index) => `Day ${index + 1}`);
+
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: Array.from({ length: entries.length }, (_, i) => `Day ${i + 1}`),
+            labels: labels,
             datasets: [{
                 label: `${activeCampaign} - Pages Read`,
-                data: entries,
+                data: chartData,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 fill: false,
                 tension: 0.3,
@@ -133,7 +178,7 @@ function loadArchivedCampaigns() {
     archiveTableBody.innerHTML = '';
 
     for (const [campaignName, campaignData] of Object.entries(campaigns)) {
-        const totalPagesRead = campaignData.entries.reduce((sum, pages) => sum + pages, 0);
+        const totalPagesRead = campaignData.entries.reduce((sum, entry) => sum + entry.pages, 0);
         const pagesLeft = campaignData.target - totalPagesRead;
         const displayPagesLeft = pagesLeft <= 0 ? 'Completed 🎉' : `${pagesLeft}`;
 
