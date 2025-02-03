@@ -54,3 +54,9 @@ body {
     font-weight: bold;
     color: green !important;
 }
+@media (max-width: 768px) {
+    .archive-table td {
+        font-size: 14px;  /* Reduce font size on mobile */
+        padding: 6px;     /* Reduce padding on mobile */
+    }
+}
