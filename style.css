@@ -3,6 +3,10 @@ body {
     font-family: Arial, sans-serif;
     padding: 20px;
 }
+.container {
+    max-width: 600px; /* Mimic mobile width on desktop */
+    margin: 0 auto; /* Center the container */
+}
 .section-header {
     font-size: 20px;
     font-weight: bold;
