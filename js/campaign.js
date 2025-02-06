@@ -55,18 +55,6 @@ function initializeCampaignListeners(campaigns, activeCampaign, updateDashboard)
         const campaignName = nameInput.value.trim();
         const targetPages = parseInt(pagesInput.value);
 
-        // Only validate if inputs are empty
-        if (!campaignName) {
-            alert('Please enter a campaign name.');
-            nameInput.focus();  // Return focus to the input
-            return;
-        }
-
-        if (!targetPages || isNaN(targetPages) || targetPages <= 0) {
-            alert('Please enter a valid number of pages.');
-            return;
-        }
-
         if (campaigns[campaignName]) {
             alert('Campaign name already exists. Please choose a different name.');
             return;
