@@ -29,9 +29,8 @@ function checkUserStatus() {
     document.getElementById('newUserView').style.display = hasExistingCampaigns ? 'none' : 'block';
     document.getElementById('existingUserView').style.display = hasExistingCampaigns ? 'block' : 'none';
     
-    if (hasExistingCampaigns) {
-        loadCampaigns();
-    }
+    // Always load campaigns to ensure dropdown is populated
+    loadCampaigns(campaigns, activeCampaign);
 }
 
 function loadCampaigns() {
@@ -149,6 +148,7 @@ document.getElementById('campaignSelect').addEventListener('change', function() 
 });
 
 document.getElementById('createCampaignBtn').addEventListener('click', function() {
+    // ... in the campaign creation part
     const campaignName = document.getElementById('newCampaignName').value.trim();
     const targetPages = parseInt(document.getElementById('newTargetPages').value);
 

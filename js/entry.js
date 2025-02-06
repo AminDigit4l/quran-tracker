@@ -33,12 +33,20 @@ function updateCurrentCampaignName() {
     }
 }
 
-function handleEntrySubmission() {
-    const date = document.getElementById('entryDate').value;
+function handleEntrySubmission(event) {
+    event.preventDefault();
+    
     const pages = parseInt(document.getElementById('pagesRead').value);
+    const date = document.getElementById('entryDate').value;
 
-    if (!date || !pages || pages <= 0) {
-        alert('Please enter valid date and pages');
+    // Modify validation to allow zero pages
+    if (isNaN(pages) || pages < 0) {
+        alert('Please enter a valid number of pages (0 or more).');
+        return;
+    }
+
+    if (!date) {
+        alert('Please select a date.');
         return;
     }
 
@@ -57,7 +65,7 @@ function handleEntrySubmission() {
     localStorage.setItem('campaigns', JSON.stringify(campaigns));
 
     // Clear form
-    document.getElementById('entryDate').value = '';
+    document.getElementById('entryDate').value = setDefaultDate();
     document.getElementById('pagesRead').value = '';
 
     // Close modal
@@ -69,11 +77,8 @@ function handleEntrySubmission() {
     // Update history view if it exists
     const historyView = document.querySelector('.history-view');
     if (historyView) {
-        const historySelect = document.getElementById('historyCampaignSelect');
-        if (historySelect) {
-            setupHistorySelect();
-            displayHistoryEntries();
-        }
+        setupHistorySelect();
+        displayHistoryEntries();
     }
 }
 

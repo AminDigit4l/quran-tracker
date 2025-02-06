@@ -125,13 +125,39 @@ function attachEntryListeners(container, campaignName) {
             const index = parseInt(entryItem.dataset.entryIndex);
             const entry = campaigns[campaignName].entries[index];
 
-            document.getElementById('editEntryDate').value = entry.date;
-            document.getElementById('editPagesRead').value = entry.pages;
-            document.getElementById('editEntryIndex').value = index;
-            document.getElementById('editCampaignName').value = campaignName;
-            document.querySelector('.edit-campaign-name').textContent = `Campaign: ${campaignName}`;
+            function editEntry(campaignName, entryIndex) {
+                const entry = campaigns[campaignName].entries[entryIndex];
+                
+                document.getElementById('editEntryDate').value = entry.date;
+                document.getElementById('editPagesRead').value = entry.pages;
+                document.getElementById('editEntryIndex').value = entryIndex;
+                document.getElementById('editCampaignName').value = campaignName;
+                
+                $('#editEntryModal').modal('show');
+            }
             
-            $('#editEntryModal').modal('show');
+            function saveEditEntry() {
+                const entryIndex = document.getElementById('editEntryIndex').value;
+                const campaignName = document.getElementById('editCampaignName').value;
+                const newDate = document.getElementById('editEntryDate').value;
+                const newPages = parseInt(document.getElementById('editPagesRead').value);
+
+                if (!newPages || newPages <= 0) {
+                    alert('Please enter a valid number of pages');
+                    return;
+                }
+
+                campaigns[campaignName].entries[index] = {
+                    date: newDate,
+                    pages: newPages
+                };
+
+                localStorage.setItem('campaigns', JSON.stringify(campaigns));
+                $('#editEntryModal').modal('hide');
+                
+                updateDashboard();
+                displayHistoryEntries();
+            };
         };
     });
 }

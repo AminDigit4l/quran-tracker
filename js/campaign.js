@@ -37,20 +37,14 @@ function initializeCampaignListeners(campaigns, activeCampaign, updateDashboard)
     // Create campaign button listener
     document.getElementById('createCampaignBtn').addEventListener('click', function() {
         const campaignName = document.getElementById('newCampaignName').value.trim();
-        const targetPagesInput = document.getElementById('newTargetPages').value;
+        const targetPages = parseInt(document.getElementById('newTargetPages').value);
 
-        // Only validate if inputs are provided
-        if (targetPagesInput === '' && campaignName === '') {
-            $('#newCampaignModal').modal('hide');
-            return;
-        }
-
+        // Only validate if inputs are empty
         if (!campaignName) {
             alert('Please enter a campaign name.');
             return;
         }
 
-        const targetPages = parseInt(targetPagesInput);
         if (!targetPages || isNaN(targetPages) || targetPages <= 0) {
             alert('Please enter a valid number of pages.');
             return;
