@@ -22,26 +22,43 @@ function initializeCampaignListeners(campaigns, activeCampaign, updateDashboard)
     // Campaign select listener
     // Remove this duplicate listener at the bottom of the file
     // Modify existing campaign select listener to show/hide delete button
+    // Campaign select listener
     document.getElementById('campaignSelect').addEventListener('change', function() {
         if (this.value === 'create_new') {
-            $('#newCampaignModal').modal('show');
+            const modal = $('#newCampaignModal');
+            modal.modal('show');
+            // Reset form when modal opens
+            document.getElementById('newCampaignName').value = '';
+            document.getElementById('newTargetPages').value = '';
             this.value = activeCampaign || '';
+            
+            // Handle modal hidden event
+            modal.on('hidden.bs.modal', function() {
+                // Remove focus from the create button
+                document.getElementById('createCampaignBtn').blur();
+                // Reset form when modal closes
+                document.getElementById('newCampaignName').value = '';
+                document.getElementById('newTargetPages').value = '';
+            });
         } else {
             activeCampaign = this.value;
             localStorage.setItem('activeCampaign', activeCampaign);
             updateDashboard();
-            updateDeleteButton();  // Add this line
+            updateDeleteButton();
         }
     });
 
     // Create campaign button listener
     document.getElementById('createCampaignBtn').addEventListener('click', function() {
-        const campaignName = document.getElementById('newCampaignName').value.trim();
-        const targetPages = parseInt(document.getElementById('newTargetPages').value);
+        const nameInput = document.getElementById('newCampaignName');
+        const pagesInput = document.getElementById('newTargetPages');
+        const campaignName = nameInput.value.trim();
+        const targetPages = parseInt(pagesInput.value);
 
         // Only validate if inputs are empty
         if (!campaignName) {
             alert('Please enter a campaign name.');
+            nameInput.focus();  // Return focus to the input
             return;
         }
 
