@@ -3,122 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Reading Tracker</title>
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>QuranTracker</title>
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 class="text-center">Quran Reading Tracker</h1>
-    <p class="text-center">Track your Quran reading progress effortlessly</p>
-
-    <!-- Main Dashboard -->
-    <div class="container" name="mainDashboard">
-        <div class="row">
-            <!-- Campaign Section -->
-            <div class="col-md-12">
-                <div class="card">
-                    <h4 class="section-header">Active Campaign</h4>
-                    <label for="campaignSelect">Select or Switch Campaign:</label>
-                    <select id="campaignSelect" class="form-control mb-3"></select>
-                    <button class="btn btn-success mb-3" data-toggle="modal" data-target="#newCampaignModal">Create New Campaign</button>
+    <div class="app-container">
+        <!-- Header with Logo -->
+        <header class="app-header">
+            <div class="logo-section">
+                <img src="images/koran.svg" alt="QuranTracker Logo" class="app-logo">
+                <div class="logo-text">
+                    <h1>QuranTracker</h1>
+                    <p>Stay on Track with your reading</p>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Daily Entry Section -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <h4 class="section-header">Add Daily Reading Entry</h4>
-                    <input type="number" id="pagesRead" placeholder="Enter the number of pages" class="form-control mb-2">
-                    <button id="addEntry" class="btn btn-primary">Add Entry</button>
-                    <h4 class="section-header">Daily Reading Entries</h4>
-                    <table class="table table-striped" id="dailyEntriesTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Pages Read</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamic rows will be inserted here via JavaScript -->
-                        </tbody>
-                    </table>
-
-                </div>
+        <!-- Card 1: Welcome Message -->
+        <div class="card welcome-card">
+            <div class="welcome-content">
+                <div class="date" id="currentDate"></div>
+                <h2 class="greeting">Assalamualaikum</h2>
+                <p>Keeping track of your reading has never been easier.</p>
             </div>
+            <img src="images/reader.svg" alt="Reader" class="reader-illustration">
         </div>
 
-        <!-- Progress Chart Section -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <h4 class="section-header">Progress</h4>
-                    <!-- Progress Bar Section -->
-                    <div class="progress mt-3">
-                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            0%
-                        </div>
+        <h3 class="section-title">Current Reading</h3>
+
+        <!-- Cards 2 & 3: Campaign and Summary -->
+        <div class="cards-row">
+            <!-- Card 2: Current Campaign -->
+            <div class="card campaign-card">
+                <h4>Current Campaign</h4>
+                <div id="newUserView" class="new-user-view">
+                    <button class="create-campaign-btn" data-toggle="modal" data-target="#newCampaignModal">
+                        Create New Campaign
+                    </button>
+                </div>
+                <div id="existingUserView" class="existing-user-view" style="display: none;">
+                    <div class="select-wrapper">
+                        <select id="campaignSelect" class="campaign-select"></select>
                     </div>
-                    <canvas id="progressChart" style="margin-top: 20px;"></canvas>
+                    <!-- Add this after the campaign select -->
+                    <div class="campaign-actions">
+                        <button id="deleteCampaignBtn" class="btn btn-outline-light btn-sm" type="button" style="display: none;">
+                            <i class="fas fa-trash"></i> Delete Campaign
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Summary -->
+            <div class="card summary-card">
+                <h4>Summary</h4>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalPages">0</div>
+                        <div class="stat-label">Total Pages</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="averagePages">0</div>
+                        <div class="stat-label">Ave Pages</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="pagesLeft">0</div>
+                        <div class="stat-label">Pages Left</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Archived Campaigns Section -->
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <h4 class="section-header">Archived Campaigns</h4>
-                    <table class="archive-table">
-                        <thead>
-                            <tr>
-                                <th>Campaign Name</th>
-                                <th>Target Pages</th>
-                                <th>Total Pages Read</th>
-                                <th>Pages Left</th>
-                            </tr>
-                        </thead>
-                        <tbody id="archiveTableBody">
-                            <!-- Archived campaign rows will be inserted here dynamically -->
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Card 4: Progress Bar -->
+        <div class="card progress-card">
+            <h4>Your Progress Bar</h4>
+            <div class="custom-progress">
+                <div id="progressBar" class="progress-fill" role="progressbar"></div>
             </div>
+        </div>
+
+        <!-- Card 5: Reading Chart -->
+        <div class="card chart-card">
+            <h4>Your Reading Chart</h4>
+            <canvas id="progressChart"></canvas>
         </div>
     </div>
 
-    <!-- Modal for New Campaign -->
-    <div class="modal fade" id="newCampaignModal" tabindex="-1" role="dialog" aria-labelledby="newCampaignModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Modals -->
+    <div class="modal fade" id="newCampaignModal" tabindex="-1">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="newCampaignModalLabel">Create New Campaign</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <h5 class="modal-title">Create New Campaign</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <label for="newCampaignName">Campaign Name:</label>
-                    <input type="text" id="newCampaignName" class="form-control mb-2" placeholder="Enter campaign name">
-                    <label for="newTargetPages">Target Pages:</label>
-                    <input type="number" id="newTargetPages" class="form-control" placeholder="Enter target pages">
+                    <div class="form-group">
+                        <label for="newCampaignName">Campaign Name:</label>
+                        <input type="text" id="newCampaignName" class="form-control" placeholder="e.g., Road to Ramadan">
+                    </div>
+                    <div class="form-group">
+                        <label for="newTargetPages">Target Pages:</label>
+                        <input type="number" id="newTargetPages" class="form-control" placeholder="e.g., 450">
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" id="createCampaignBtn" class="btn btn-primary">Create Campaign</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="modal fade" id="addEntryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Reading Entry</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="current-campaign-name"></p>
+                    <div class="form-group">
+                        <label for="entryDate">Date</label>
+                        <input type="date" id="entryDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="pagesRead">Pages Read</label>
+                        <input type="number" id="pagesRead" class="form-control" placeholder="Enter number of pages">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="addEntry" class="btn btn-primary">Add Entry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Entry Modal -->
+    <div class="modal fade" id="editEntryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Reading Entry</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="edit-campaign-name"></p>
+                    <div class="form-group">
+                        <label for="editEntryDate">Date</label>
+                        <input type="date" id="editEntryDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPagesRead">Pages Read</label>
+                        <input type="number" id="editPagesRead" class="form-control" placeholder="Enter number of pages">
+                    </div>
+                    <input type="hidden" id="editEntryIndex">
+                    <input type="hidden" id="editCampaignName">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveEditEntry" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="tracker.js"></script>
+    <script src="js/entry.js"></script>
+    <script src="js/campaign.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/tracker.js"></script>
 </body>
 </html>
-`

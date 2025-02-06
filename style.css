@@ -1,87 +1,494 @@
+/* Base styles (mobile first) */
+:root {
+    --primary-color: #e91e63;
+    --secondary-color: #FF4081;
+    --background-color: #F5F5F5;
+    --card-background: #FFFFFF;
+    --text-color: #333333;
+    --border-radius: 20px;
+    --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --padding-mobile: 16px;
+}
+
 body {
-    background-color: #eaf3ff;
-    font-family: Arial, sans-serif;
-    padding: 20px;
+    background-color: var(--background-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
 }
-.container {
-    max-width: 600px; /* Mimic mobile width on desktop */
-    margin: 0 auto; /* Center the container */
+
+.app-container {
+    padding: var(--padding-mobile);
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
-.section-header {
+
+/* Header Styles */
+.app-header {
+    padding: 16px 0;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-logo {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-text h1 {
+    margin: 0;
     font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
 }
+
+.logo-text p {
+    margin: 0;
+    font-size: 12px;
+}
+
+/* Card Base Styles */
 .card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: var(--padding-mobile);
+    margin-bottom: 16px;
+    border: none;
+    box-shadow: var(--card-shadow);
+}
+
+/* Card 1: Welcome Card */
+.welcome-card {
+    position: relative;
+    overflow: hidden;
     padding: 20px;
-    margin-top: 15px;
 }
-.nav-link.active {
-    font-weight: bold;
-    color: #007bff;
+
+.welcome-content {
+    max-width: 65%;
 }
-.archive-table {
-    width: 100%;
-    border-collapse: collapse;
+
+.date {
+    font-size: 12px;
+    color: #666;
 }
-.archive-table th, .archive-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
+
+.greeting {
+    font-size: 24px;
+    font-weight: 800;
+    font-style: italic;
+    margin: 8px 0;
+    color: var(--primary-color);
 }
-.archive-table th {
-    background-color: #f2f2f2;
+
+.welcome-content p {
+    font-size: 14px;
+    margin: 0;
 }
-.divider {
-    height: 1px;
-    background-color: #ccc;
-    margin: 15px 0;
+
+.reader-illustration {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 80px;
 }
-.progress {
-    background-color: #f2f2f2;
-    border-radius: 5px;
-    height: 25px;
-    width: 100%;
+
+/* Cards Row (Cards 2 & 3) */
+.cards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Always two columns */
+    gap: 16px;
+    margin-bottom: 16px;
 }
-.progress-bar {
-    background-color: #007bff;
-    font-weight: bold;
-    text-align: center;
-    line-height: 25px;
-    color: white;
-    transition: width 0.5s ease; /* Smooth animation */
-}
-.archive-table td {
-    font-weight: normal;
-}
-.archive-table td.completed {
-    font-weight: bold;
-    color: green !important;
-}
-@media (max-width: 768px) {
-    .archive-table td {
-        font-size: 14px;  /* Reduce font size on mobile */
-        padding: 6px;     /* Reduce padding on mobile */
+
+/* Remove this from the media query since we want it always side by side */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 768px;
+        padding: 24px;
+    }
+
+    .reader-illustration {
+        height: 100px;
     }
 }
-#dailyEntriesTable {
-    margin-top: 15px;
-    width: 100%;
-}
-#dailyEntriesTable th, #dailyEntriesTable td {
-    text-align: center;
-    padding: 10px;
-}
-.edit-btn, .delete-btn {
-    cursor: pointer;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
+
+/* Card 2: Campaign Card */
+.campaign-card {
+    background: var(--primary-color);
     color: white;
 }
-.edit-btn {
-    background-color: #007bff;
+.campaign-card h4 {
+    color: white;
 }
-.delete-btn {
-    background-color: #dc3545;
+
+.campaign-select {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 20px;
+    font-style: italic;
+    text-transform: capitalize;
+    font-weight: bold;
+    line-height: 1.2em;
+    appearance: none;
+    white-space: normal;
+    word-wrap: break-word;
+    min-height: 44px;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.create-campaign-btn {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: left;
+    border-radius: 10px;
+}
+
+.campaign-actions {
+    margin-top: 10px;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Card 3: Summary Card */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 10px;
+    text-transform: capitalize;
+    line-height: 1.0em;
+}
+
+/* Card 4: Progress Bar */
+.custom-progress {
+    background: rgba(233, 30, 99, 0.2);
+    border-radius: 10px;
+    height: 24px;
+    margin: 12px 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--primary-color);
+    height: 100%;
+    width: 0;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Card 5: Chart Card */
+.chart-card {
+    padding: 20px;
+}
+
+#progressChart {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+/* Modal-styles */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.btn-primary {
+    background-color: #e91e63;
+    border-color: #e91e63;
+    border-radius: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #d81557;
+    border-color: #d81557;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 8px;
+}
+
+.modal .form-control {
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 768px;
+        padding: 24px;
+    }
+
+    .cards-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .reader-illustration {
+        height: 120px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app-container {
+        max-width: 1024px;
+        padding: 32px;
+    }
+}
+/* Add after the root variables */
+h1, h2, h3, h4 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Override specific heading styles where needed */
+.logo-text h1 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.card h4 {
+    margin-bottom: 12px;
+}
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.nav-item.active {
+    color: #e91e63;
+}
+
+.nav-item i {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+/* View Styles */
+.entry-form-view, .history-view {
+    display: none;
+    padding: 20px;
+    margin-bottom: 70px; /* Space for bottom nav */
+}
+
+/* Adjust main container for bottom nav */
+.app-container {
+    margin-bottom: 70px;
+}
+/* Entry Form View */
+.entry-form-view {
+    padding: 20px;
+    margin-bottom: 70px;
+}
+
+.entry-form-view .card {
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.entry-form-view .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.entry-form-view .current-campaign-name {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 0.9em;
+}
+
+.entry-form-view .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.entry-form-view label {
+    font-weight: 500;
+    color: #333;
+}
+
+.entry-form-view .btn-primary {
+    margin-top: 1rem;
+    padding: 0.8rem;
+}
+/* History View Styles */
+.history-view {
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+.history-header-card {
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+.campaign-filter {
+    margin-top: 15px;
+}
+
+.campaign-history-card {
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.campaign-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.campaign-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.entry-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.entry-info {
+    display: flex;
+    gap: 15px;
+}
+
+.entry-date {
+    color: #666;
+}
+
+.entry-pages {
+    font-weight: 500;
+}
+
+.entry-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.no-entries {
+    color: #666;
+    text-align: center;
+    padding: 20px;
 }
