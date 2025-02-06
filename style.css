@@ -104,7 +104,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;  /* Always two columns */
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 /* Remove this from the media query since we want it always side by side */
@@ -236,7 +236,7 @@ body {
 
 #progressChart {
     width: 100% !important;
-    height: 300px !important;
+    height: 250px !important;
 }
 
 /* Modal-styles */
@@ -348,7 +348,7 @@ h4 {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 60px;
+    height: 80px;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
